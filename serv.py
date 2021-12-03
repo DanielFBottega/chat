@@ -30,7 +30,7 @@ def msgClientes(cliente):
             clientes.remove(cliente)
             cliente.close()
             nome = nomes[index]
-            mensagem(f'{nomes} saiu do chat'.encode('utf-8'))
+            mensagem(f'{nome} saiu do chat'.encode('utf-8'))
             nomes.remove(nome)
             break
 
@@ -44,7 +44,7 @@ def conexao():
         nome = cliente.recv(1024)
         nomes.append(nome)
         clientes.append(cliente)
-        print(f'O nome do cliente é: {nome}'.encode('utf-8'))
+        print(f'O nome do cliente é: {nome.decode("utf-8")}'.encode('utf-8'))
         mensagem(f'{nome} Conectou ao chat'.encode('utf-8'))
         cliente.send('Conectado'.encode('utf-8'))
         thread = threading.Thread(target=msgClientes, args=(cliente,))

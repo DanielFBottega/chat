@@ -1,37 +1,43 @@
 import socket
 import threading
-import sys, os
+import sys
+import os
 
 nome = input('Qual seu nome: ')
 cliente = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 cliente.connect(('localhost', 5000))
 
-#MENSAGENS RECEBIDAS ENTRAM AQUI
+
+#Parte de enviar mensagens
 def conServ():
     while True:
         try:
-            msg = cliente.recv(1024).decode('utf-8')
-            if msg == "Nome: ":
-                cliente.send(nome.encode('utf-8'))
-            else:
-                print(msg)
-                os.system(msg) #isso ta funcionando mas parece estar com erro
+            #msg = cliente.recv(1024).decode('utf-8')
+            #if msg == "Nome: ":
+                #cliente.send(nome.encode('utf-8'))
+            enviar = input("digite uma mensagem:")
+            if enviar != "":
+                cliente.send("{}:{}".format(nome, enviar).encode('utf-8'))
+            # os.system(msg) #isso ta funcionando mas parece estar com erro
         except:
             print('Deu Ruim')
             cliente.close()
             break
 
 
-#MENSAGENS ENVIADAS ENTRAM AQUI
+#Quando recebe mensagens
 def conCliente():
     while True:
-        msg = input(">>")
-        cliente.send(msg.encode('utf-8'))
+        msg = cliente.recv(1024).decode('utf-8')
+        if msg == "Nome: ":
+            cliente.send(nome.encode('utf-8'))
+        else:
+            print(msg)
 
 
-#UMA THREAD PARA CADA AÇÃO, RECEBER MENSAGEM E ENVIAR
-recebe_thread = threading.Thread(target = conServ)
+# UMA THREAD PARA CADA AÇÃO, RECEBER MENSAGEM E ENVIAR
+recebe_thread = threading.Thread(target=conServ)
 recebe_thread.start()
 
-envia_thread = threading.Thread(target = conCliente)
+envia_thread = threading.Thread(target=conCliente)
 envia_thread.start()
