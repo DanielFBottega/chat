@@ -46,7 +46,7 @@ def conexao():
         clientes.append(cliente)
         print(f'O nome do cliente é: {nome.decode("utf-8")}'.encode('utf-8'))
         mensagem(f'{nome} Conectou ao chat'.encode('utf-8'))
-        cliente.send('Conectado'.encode('utf-8'))
+        cliente.send('Conectado digite y para enviar uma mensagem'.encode('utf-8'))
         thread = threading.Thread(target=msgClientes, args=(cliente,))
         thread.start()
 
