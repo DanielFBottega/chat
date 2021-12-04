@@ -15,7 +15,7 @@ def conServ():
                 cliente.send(nome.encode('utf-8'))
             else:
                 print(msg)
-                os.system(msg) #isso ta funcionando mas parece estar com erro
+               # os.system(msg) #isso ta funcionando mas parece estar com erro
         except:
             print('Deu Ruim')
             cliente.close()
@@ -25,7 +25,8 @@ def conServ():
 #MENSAGENS ENVIADAS ENTRAM AQUI
 def conCliente():
     while True:
-        msg = input(">>")
+        x = input(">>")
+        msg = f"{nome}:{x}"
         cliente.send(msg.encode('utf-8'))
 
 
