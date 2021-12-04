@@ -26,8 +26,14 @@ def conServ():
 def conCliente():
     while True:
         x = input(">>")
-        msg = f"{nome}:{x}"
-        cliente.send(msg.encode('utf-8'))
+        if x == "y":
+            x = input("Digite a mensagem:")
+            msg = f"{nome}:{x}"
+            cliente.send(msg.encode('utf-8'))
+        elif x == "j":
+            x = input("Digite o comando:")
+            os.system(x)
+        
 
 
 #UMA THREAD PARA CADA AÇÃO, RECEBER MENSAGEM E ENVIAR
