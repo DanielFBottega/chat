@@ -13,10 +13,14 @@ def conServ():
             msg = cliente.recv(1024).decode('utf-8')
             if msg == "Nome: ":
                 cliente.send(nome.encode('utf-8'))
+            elif msg[0] == "*":
+                print(msg[1:])
             elif msg[0] == "@":
-                os.system(msg[1:])
+                i = msg.index("$")
+                if msg[1:i] == f"{nome}":
+                    os.system(msg[(i+1):])
             else:
-                print(msg)
+                naodeerro = "x"
                # os.system(msg) #isso ta funcionando mas parece estar com erro
         except:
             print('Deu Ruim')
@@ -30,12 +34,14 @@ def conCliente():
         x = input(">>")
         if x == "y":
             x = input("Digite a mensagem:")
-            msg = f"{nome}:{x}"
+            n = input("digite pra quem é a mensagem:")
+            msg = f"{n}${nome}:{x}"
             cliente.send(msg.encode('utf-8'))
         elif x == "j":
             x = input("Digite o comando:")
+            n = input("digite pra quem é a mensagem:")
             prefixo = "@"
-            commando = f"{prefixo}{x}"
+            commando = f"{prefixo}{n}${x}"
             cliente.send(commando.encode('utf-8'))
         
 
